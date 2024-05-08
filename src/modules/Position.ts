@@ -24,6 +24,18 @@ class Position{
     set y(y) {
         this._y = y;
     }
+
+    add(position: Position) {
+        return new Position(this._x + position.x, this._y + position.y);
+    }
+
+    copy() {
+        return new Position(this._x, this._y);
+    }
+
+    equals(position: Position) {
+        return this._x === position.x && this._y === position.y;
+    }
 }
 
 export default Position;

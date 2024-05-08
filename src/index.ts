@@ -4,6 +4,5 @@ import Game from "./modules/Game";
 
 
 const game = new Game(document.getElementById("stage")!, 20, 20);
-game.start();
 
 

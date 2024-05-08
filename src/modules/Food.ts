@@ -10,14 +10,22 @@ class Food {
 
     constructor(game: Game) {
         this._game = game;
-        this.randomPosition();
+        this.createFood();
+    }
+
+    createFood() {
+        //随机出新的食物
+        this._position = this.randomPosition();
+        this._game.renderer.setCellValue(this._position, 1);
+        this._game.renderer.needUpdate = true;
     }
 
     //随机坐标
-    randomPosition() {
-        //随机出新的食物
-        this._position = new Position(randomInt(this._game.row), randomInt(this._game.col));
+    private randomPosition(): Position {
+        const position = new Position(randomInt(this._game.x), randomInt(this._game.y));
+        return this._game.snake.touchFood(position)? this.randomPosition() : position;
     }
+
 
     get position() {
         return this._position;
