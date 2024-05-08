@@ -1,23 +1,29 @@
 import Game from "./Game";
-import Snake from "./Snake";
 import Position from "./Position";
 
-class Control{
+class Control {
     private _game: Game;
-
+    private _isCreated: boolean = false;
+    
     constructor(game: Game) {
         this._game = game;
-
-        this.init();
     }
 
-    private init() {
-        document.addEventListener('keydown', (e) => {
-            this.turn(e);
-        });
+    createControl() {
+        if(!this._isCreated) {
+            document.addEventListener('keydown', (e) => {
+                this._turn(e);
+            });
+
+            // document.addEventListener("visibilitychange", () => {
+            //     if (document.visibilityState === "visible") {
+            //         this._game.pause();
+            //     }
+            // });
+        }
     }
 
-    private turn(event: KeyboardEvent){
+    private _turn(event: KeyboardEvent) {
         switch (event.key) {
             case 'ArrowUp':
             case 'w':
@@ -42,13 +48,16 @@ class Control{
             case 'Enter':
                 this._game.start();
                 break;
+
+            case 'r':
+                this._game.reStart();
+                break;
+
+            case 'p':
+                this._game.isPause? this._game.play() : this._game.pause();
+                break;
         }
     }
-
-
-
-
-
 }
 
 

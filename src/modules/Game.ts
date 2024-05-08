@@ -1,4 +1,3 @@
-// 引入其他的类
 import Food from "./Food";
 import Renderer from "./Renderer";
 import Time from "./Time";
@@ -8,7 +7,6 @@ import Control from "./Control";
 import ScorePanel from "./ScorePanel";
 
 
-// 游戏控制器，控制其他的所有类
 class Game {
     private _x: number;//横轴
     private _y: number;//纵轴
@@ -16,16 +14,16 @@ class Game {
     private _food: Food;
     private _time: Time;
     private _snake: Snake;
-    private _renderer: Renderer;
     private _control: Control;
+    private _renderer: Renderer;
     private _scorePanel: ScorePanel;
     private _isGameOver: boolean = false;
-
+    private _isPause: boolean = false;
 
     constructor(element: HTMLElement, x: number = 20, y: number = 20, maxLevel: number = 10, upScore: number = 1) {
         this._element = element;
-        this._x = Math.floor(x);
-        this._y = Math.floor(y);
+        this._x = x > 5? Math.floor(x): 5;
+        this._y = y > 5? Math.floor(y): 5;
 
         this._renderer = new Renderer(this);
         this._scorePanel = new ScorePanel(maxLevel, upScore);
@@ -33,16 +31,10 @@ class Game {
         this._time = new Time();
         this._snake = new Snake(this);
         this._food = new Food(this);
-
         this._control = new Control(this);
-        this._renderer.renderer();//初始化开始界面
+
         this._run = this._run.bind(this);
-
-    }
-
-
-    get renderer() {
-        return this._renderer;
+        this._ready();
     }
 
     get x() {
@@ -53,6 +45,10 @@ class Game {
         return this._y;
     }
 
+    get isPause() {
+        return this._isPause;
+    }
+
     get element() {
         return this._element;
     }
@@ -61,36 +57,71 @@ class Game {
         return this._snake;
     }
 
+    get renderer() {
+        return this._renderer;
+    }
+
+    private _ready() {
+        this._isGameOver = false;
+        this._isPause = false;
+        this._renderer.createRenderer();
+        this._scorePanel.createScorePanel();
+        this._snake.createSnake();
+        this._food.createFood();
+        this._control.createControl();
+
+        this._renderer.renderer();//渲染开始界面
+    }
+
+    //开始
     start() {
         this._time.start();
         this._run();
     }
 
+    //重新开始
+    reStart() {
+        this._ready();
+        this._time.start();
+        this._run();
+    }
+
+    pause() {
+        this._isPause = true;
+        this._time.pause();
+    }
+
+    play() {
+        this._isPause = false;
+        this._time.play();
+        this._run();
+    }
+
     private _run() {
         const deltaTime = this._time.deltaTime;
-        if (deltaTime >= Constant.TICK_DURATION / this._scorePanel.level) {
-            console.log(Constant.TICK_DURATION / this._scorePanel.level);
+        const tickDuration = Constant.TICK_DURATION / this._scorePanel.level;
+        if (deltaTime >= tickDuration) {
+            this._time.tick(deltaTime - tickDuration);
             this.update();
-            this._time.tick(deltaTime - Constant.TICK_DURATION);
         }
 
-        !this._isGameOver && requestAnimationFrame(this._run);
+        !this._isGameOver && !this._isPause && requestAnimationFrame(this._run);
     }
 
     private update() {
         this._snake.move();
 
-        if(this._snake.touchWall()) {
+        if (this._snake.touchWall()) {
             this._gameOver("撞到墙，游戏结束！");
             return;
         }
 
-        if(this._snake.touchSelf()) {
+        if (this._snake.touchSelf()) {
             this._gameOver("撞到自己，游戏结束！");
             return;
         }
 
-        if(this._snake.touchFood(this._food.position)) {
+        if (this._snake.eatFood(this._food.position)) {
             this._snake.growUp(this._food.position);
             this._food.createFood();
             this._scorePanel.addScore();

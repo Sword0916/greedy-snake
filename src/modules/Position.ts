@@ -1,8 +1,6 @@
-
-
-class Position{
-    private _x: number;
-    private _y: number;
+class Position {
+    private _x: number;//横向坐标
+    private _y: number;//纵向坐标
 
     constructor(x: number, y: number) {
         this._x = x;

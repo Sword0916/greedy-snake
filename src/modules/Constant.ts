@@ -1,9 +1,10 @@
 const STEP = 10;//步长
-const BLACK_CLASS = "snake";//黑色class
+const SNAKE_CLASS = "snake";//蛇的class
+const FOOD_CLASS = "food";//食物的class
 const TICK_DURATION = 500;//渲染时间间隔
 
 
 export default {
-    STEP, BLACK_CLASS, TICK_DURATION
+    STEP, SNAKE_CLASS, TICK_DURATION, FOOD_CLASS
 }
 
