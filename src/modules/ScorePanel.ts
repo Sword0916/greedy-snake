@@ -10,8 +10,8 @@ class ScorePanel {
     constructor(maxLevel: number, upScore: number) {
         this._scoreEle = document.getElementById('score')!;
         this._levelEle = document.getElementById('level')!;
-        this._maxLevel = 3 < maxLevel && maxLevel < 11? Math.floor(maxLevel) : 5;
-        this._upScore = 3 < upScore && upScore < 30? Math.floor(upScore) : 5;
+        this._maxLevel = 3 < maxLevel && maxLevel < 11? Math.floor(maxLevel) : 10;
+        this._upScore = 3 < upScore && upScore < 30? Math.floor(upScore) : 10;
     }
 
     createScorePanel() {
