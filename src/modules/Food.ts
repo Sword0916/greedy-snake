@@ -16,7 +16,6 @@ class Food {
 
     createFood() {
         this._position = this._randomPosition();
-        this._game.renderer.needUpdate = true;
     }
 
     private _randomPosition(): Position {

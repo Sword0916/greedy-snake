@@ -1,4 +1,4 @@
-import {CELL_TYPE, STEP} from "./Constant";
+import {CELL_LENGTH, CELL_TYPE} from "./Constant";
 import Cell from "./Cell";
 import Game from "./Game";
 import Position from "./Position";
@@ -7,7 +7,6 @@ import Position from "./Position";
 //渲染器
 class Renderer {
     private _game: Game;
-    private _needUpdate: boolean = false; //更新标志位
     private _cells: Cell[][]; //面板
 
     constructor(game: Game) {
@@ -16,36 +15,26 @@ class Renderer {
     }
 
     createRenderer() {
-        this._needUpdate = false;
-
         this._game.element.innerHTML = "";
-        this._game.element.style.width = this._game.x * STEP + "px";
-        this._game.element.style.height = this._game.y * STEP + "px";
+        this._game.element.style.width = this._game.x * CELL_LENGTH + "px";
+        this._game.element.style.height = this._game.y * CELL_LENGTH + "px";
 
-        for(let y = 0; y < this._game.y; y++) {
+        for (let y = 0; y < this._game.y; y++) {
             this._cells.push([]);
-            for(let x = 0; x < this._game.x; x++) {
+            for (let x = 0; x < this._game.x; x++) {
                 this._cells[y].push(new Cell(this._game.element));
             }
         }
     }
 
-    set needUpdate(needUpdate: boolean) {
-        this._needUpdate = needUpdate;
-    }
-
-    //渲染
     renderer() {
-        if (this._needUpdate) {
-            this._needUpdate = false;
-            const snakePositions = this._game.snake.positions;
-            const foodPosition = this._game.food.position;
-            this._cells.forEach((row, y) => {
-                row.forEach((col, x) => {
-                    col.type = this._getCellType(snakePositions, foodPosition, x, y);
-                })
+        const snakePositions = this._game.snake.positions;
+        const foodPosition = this._game.food.position;
+        this._cells.forEach((row, y) => {
+            row.forEach((col, x) => {
+                col.type = this._getCellType(snakePositions, foodPosition, x, y);
             })
-        }
+        })
     }
 
     private _getCellType(snakePositions: Position[], foodPosition: Position, x: number, y: number) {

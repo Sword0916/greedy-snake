@@ -34,7 +34,7 @@ class Time {
         this._playTime = Date.now();
     }
 
-    tick(correctionValue: number) {
+    correctTime(correctionValue: number) {
         this._playTime = 0;
         this._pauseTime = 0;
         //当前时间减去修正值

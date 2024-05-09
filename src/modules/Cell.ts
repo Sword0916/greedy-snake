@@ -15,25 +15,26 @@ class Cell {
     }
 
     set type(type) {
-        if(type !== this._type) {
+        if (type !== this._type) {
             //类型不同再修改
+            this._updateElementClass(this._type, type);
             this._type = type;
-            this._updateElementClass();
         }
     }
 
-    private _updateElementClass() {
-        if(this._type === CELL_TYPE.Empty) {
-            this._element.classList.contains(SNAKE_CLASS) && this._element.classList.remove(SNAKE_CLASS);
-            this._element.classList.contains(FOOD_CLASS) && this._element.classList.remove(FOOD_CLASS);
-        } else if(this._type === CELL_TYPE.Snake) {
-            this._element.classList.contains(FOOD_CLASS) && this._element.classList.remove(FOOD_CLASS);
-            this._element.classList.add(SNAKE_CLASS);
-        } else if(this._type === CELL_TYPE.Food) {
-            this._element.classList.contains(SNAKE_CLASS) && this._element.classList.remove(SNAKE_CLASS);
-            this._element.classList.add(FOOD_CLASS);
-        } else if(this._type === CELL_TYPE.Wall) {
-            //
+    private _updateElementClass(oldType: CELL_TYPE, newType: CELL_TYPE) {
+        if (oldType !== CELL_TYPE.Empty) {
+            this._element.classList.remove(
+                oldType === CELL_TYPE.Food ?
+                    FOOD_CLASS : SNAKE_CLASS
+            );
+        }
+
+        if (newType !== CELL_TYPE.Empty) {
+            this._element.classList.add(
+                newType === CELL_TYPE.Food ?
+                    FOOD_CLASS : SNAKE_CLASS
+            );
         }
     }
 

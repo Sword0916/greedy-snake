@@ -5,13 +5,10 @@ class Snake {
     private _game: Game;
     private _positions: Position[] = [];
     private _speed: Position = new Position(1, 0);
-    private _isGrow: boolean = false;//吃到食物长大一格
     private _turnSpeed: Position | null = null;
-
 
     constructor(game: Game) {
         this._game = game;
-        this.createSnake();
     }
 
     createSnake() {
@@ -21,9 +18,6 @@ class Snake {
             new Position(2, 0), //头
         ];
         this._speed = new Position(1, 0);
-        this._isGrow = false;
-
-        this._game.renderer.needUpdate = true;
     }
 
     move() {
@@ -34,28 +28,20 @@ class Snake {
 
         if(this._isEatFood(this._game.food.position)) {
             //吃到变长
-            this._growUp(this._game.food.position);
+            this._positions.push(this._game.food.position);
+            this._game.checkWin();
             this._game.food.createFood();
             this._game.scorePanel.addScore();
         } else {
             //没吃到前进
             for (let i = 0; i < this._positions.length; i++) {
-                if (i === this._positions.length - 1) {
-                    //头
-                    this._positions[i] = this._positions[i].add(this._speed);
-                } else {
-                    //尾
-                    this._positions[i] = this._positions[i + 1].copy();
-                }
+                this._positions[i] = (
+                    i === this._positions.length - 1 ?
+                        this._positions[i].add(this._speed) : //头
+                        this._positions[i + 1].copy()//尾
+                )
             }
         }
-        this._game.renderer.needUpdate = true;
-
-    }
-
-    //长大
-    private _growUp(position: Position) {
-        this._positions.push(position);
     }
 
     get positions() {
@@ -104,7 +90,6 @@ class Snake {
         }
         return false;
     }
-
 
 }
 

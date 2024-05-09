@@ -20,7 +20,7 @@ class Game {
     private _isGameOver: boolean = false;
     private _isPause: boolean = false;
 
-    constructor(element: HTMLElement, x: number = 20, y: number = 20, maxLevel: number = 10, upScore: number = 1) {
+    constructor(element: HTMLElement, x: number = 20, y: number = 20, maxLevel: number = 10, upScore: number = 10) {
         this._element = element;
         this._x = x > 5? Math.floor(x): 5;
         this._y = y > 5? Math.floor(y): 5;
@@ -32,7 +32,7 @@ class Game {
         this._control = new Control(this);
 
         this._run = this._run.bind(this);
-        this._ready();
+        this._prepare();
     }
 
     get x() {
@@ -67,7 +67,7 @@ class Game {
         return this._scorePanel;
     }
 
-    private _ready() {
+    private _prepare() {
         this._isGameOver = false;
         this._isPause = false;
         this._renderer.createRenderer();
@@ -87,7 +87,7 @@ class Game {
 
     //重新开始
     reStart() {
-        this._ready();
+        this._prepare();
         this._time.start();
         this._run();
     }
@@ -107,14 +107,14 @@ class Game {
         const deltaTime = this._time.deltaTime;
         const tickDuration = TICK_DURATION / this._scorePanel.level;
         if (deltaTime >= tickDuration) {
-            this._time.tick(deltaTime - tickDuration);
-            this.update();
+            this._time.correctTime(deltaTime - tickDuration);
+            this._update();
         }
 
         !this._isGameOver && !this._isPause && requestAnimationFrame(this._run);
     }
 
-    private update() {
+    private _update() {
         this._snake.move();
 
         if (this._snake.touchWall()) {
@@ -134,6 +134,14 @@ class Game {
     private _gameOver(msg: string) {
         this._isGameOver = true;
         alert(msg);
+    }
+
+    //验证是否胜利
+    checkWin() {
+        if(this._x * this._y === this._snake.positions.length){
+            this._isGameOver = true;
+            alert("胜利！游戏结束！");
+        }
     }
 
 }
