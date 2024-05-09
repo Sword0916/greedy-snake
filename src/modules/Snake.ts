@@ -1,13 +1,13 @@
 import Position from "./Position";
 import Game from "./Game";
-import * as exports from "webpack";
 
 class Snake {
     private _game: Game;
     private _positions: Position[] = [];
     private _speed: Position = new Position(1, 0);
-    private _isTurn: boolean = false;
     private _isGrow: boolean = false;//吃到食物长大一格
+    private _turnSpeed: Position | null = null;
+
 
     constructor(game: Game) {
         this._game = game;
@@ -21,64 +21,66 @@ class Snake {
             new Position(2, 0), //头
         ];
         this._speed = new Position(1, 0);
-        this._isTurn = false;
         this._isGrow = false;
-
-        this._positions.forEach((p) => {
-            this._game.renderer.setCellValue(p, 1);
-        });
 
         this._game.renderer.needUpdate = true;
     }
 
     move() {
-        for (let i = 0; i < this._positions.length; i++) {
-            if (i === this._positions.length - 1) {
-                //头
-                this._positions[i] = this._positions[i].add(this._speed);
-                this._game.renderer.setCellValue(this._positions[i], 1);
-            } else {
-                //尾
-                if (i === 0) {
-                    this._game.renderer.setCellValue(this._positions[i], 0);
+        if(this._turnSpeed) {
+            this._speed = this._turnSpeed;
+            this._turnSpeed = null;
+        }
+
+        if(this._isEatFood(this._game.food.position)) {
+            //吃到变长
+            this._growUp(this._game.food.position);
+            this._game.food.createFood();
+            this._game.scorePanel.addScore();
+        } else {
+            //没吃到前进
+            for (let i = 0; i < this._positions.length; i++) {
+                if (i === this._positions.length - 1) {
+                    //头
+                    this._positions[i] = this._positions[i].add(this._speed);
+                } else {
+                    //尾
+                    this._positions[i] = this._positions[i + 1].copy();
                 }
-                //身体向前移一位
-                this._positions[i] = this._positions[i + 1].copy();
-                this._game.renderer.setCellValue(this._positions[i], 1);
             }
         }
         this._game.renderer.needUpdate = true;
-        this._isTurn = false;
+
     }
 
     //长大
-    growUp(position: Position) {
+    private _growUp(position: Position) {
         this._positions.push(position);
+    }
+
+    get positions() {
+        return this._positions;
     }
 
     //转向
     turn(position: Position) {
-        if (!this._isTurn) {
-            if (this._speed.x === 0 && position.x !== 0) {
-                //上下运动
-                this._speed = position;
-                this._isTurn = true;
-            } else if (this._speed.y === 0 && position.y !== 0) {
-                //左右运动
-                this._speed = position;
-                this._isTurn = true;
-            }
+        if (this._speed.x === 0 && position.x !== 0) {
+            //上下运动
+            this._turnSpeed = position;
+        } else if (this._speed.y === 0 && position.y !== 0) {
+            //左右运动
+            this._turnSpeed = position;
+        } else {
+            this._turnSpeed = null;
         }
     }
 
-    //吃掉食物
-    eatFood(foodPosition: Position) {
+    private _isEatFood(foodPosition: Position) {
         let head = this._positions[this._positions.length - 1];
         head = head.add(this._speed);
         return head.equals(foodPosition);
     }
 
-    //碰到食物
     touchFood(foodPosition: Position) {
         for (let i = 0; i < this._positions.length; i++) {
             if (this._positions[i].equals(foodPosition)) {
@@ -88,13 +90,11 @@ class Snake {
         return false;
     }
 
-    //碰到墙
     touchWall() {
         const head = this._positions[this._positions.length - 1];
         return !(0 <= head.x && head.x < this._game.x && 0 <= head.y && head.y < this._game.y);
     }
 
-    //碰到自己
     touchSelf() {
         const head = this._positions[this._positions.length - 1];
         for (let i = 0; i < this._positions.length - 1; i++) {

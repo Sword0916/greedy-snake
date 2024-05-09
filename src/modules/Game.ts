@@ -1,7 +1,7 @@
 import Food from "./Food";
 import Renderer from "./Renderer";
 import Time from "./Time";
-import Constant from "./Constant";
+import {TICK_DURATION} from "./Constant";
 import Snake from "./Snake";
 import Control from "./Control";
 import ScorePanel from "./ScorePanel";
@@ -24,10 +24,8 @@ class Game {
         this._element = element;
         this._x = x > 5? Math.floor(x): 5;
         this._y = y > 5? Math.floor(y): 5;
-
-        this._renderer = new Renderer(this);
         this._scorePanel = new ScorePanel(maxLevel, upScore);
-
+        this._renderer = new Renderer(this);
         this._time = new Time();
         this._snake = new Snake(this);
         this._food = new Food(this);
@@ -57,8 +55,16 @@ class Game {
         return this._snake;
     }
 
+    get food() {
+        return this._food;
+    }
+
     get renderer() {
         return this._renderer;
+    }
+
+    get scorePanel() {
+        return this._scorePanel;
     }
 
     private _ready() {
@@ -99,7 +105,7 @@ class Game {
 
     private _run() {
         const deltaTime = this._time.deltaTime;
-        const tickDuration = Constant.TICK_DURATION / this._scorePanel.level;
+        const tickDuration = TICK_DURATION / this._scorePanel.level;
         if (deltaTime >= tickDuration) {
             this._time.tick(deltaTime - tickDuration);
             this.update();
@@ -121,11 +127,6 @@ class Game {
             return;
         }
 
-        if (this._snake.eatFood(this._food.position)) {
-            this._snake.growUp(this._food.position);
-            this._food.createFood();
-            this._scorePanel.addScore();
-        }
         this._renderer.renderer();
     }
 
