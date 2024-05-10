@@ -41,19 +41,18 @@ body {
 
     & > div {
       display: inline-block;
-      width: 8px;
-      height: 8px;
       border: 1px dashed @grid-color;
       justify-content: space-between;
       align-content: space-between;
     }
 
     & > .snake {
+      border-radius: 25%;
       background-color: @snake-color;
     }
 
     & > .food {
-      border-radius: 5px;
+      border-radius: 50%;
       background-color: @food-color;
     }
   }
@@ -64,6 +63,15 @@ body {
     display: flex;
     // 设置主轴对齐方式
     justify-content: space-between;
+  }
+
+  #remark {
+    width: 300px;
+    margin-top: 50px;
+    .control {
+      display: flex;
+      justify-content: space-between;
+    }
   }
 }
 

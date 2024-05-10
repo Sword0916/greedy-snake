@@ -14,7 +14,7 @@ class Food {
         return this._position;
     }
 
-    createFood() {
+    prepareFood() {
         this._position = this._randomPosition();
     }
 

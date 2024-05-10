@@ -1,4 +1,4 @@
-import {CELL_TYPE, FOOD_CLASS, SNAKE_CLASS} from "./Constant";
+import {CELL_TYPE, FOOD_CLASS, SNAKE_CLASS, CELL_LENGTH} from "./Constant";
 
 class Cell {
     private _element: HTMLElement;
@@ -6,6 +6,8 @@ class Cell {
 
     constructor(stage: HTMLElement) {
         this._element = document.createElement("div");
+        this._element.style.width = (CELL_LENGTH - 2) + 'px';
+        this._element.style.height = (CELL_LENGTH - 2) + 'px';
         this._type = CELL_TYPE.Empty;
         stage.appendChild(this._element);
     }

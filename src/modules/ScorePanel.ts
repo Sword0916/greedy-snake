@@ -14,7 +14,7 @@ class ScorePanel {
         this._upScore = 3 < upScore && upScore < 30? Math.floor(upScore) : 10;
     }
 
-    createScorePanel() {
+    prepareScorePanel() {
         this._score = 0;
         this._level = 1;
     }

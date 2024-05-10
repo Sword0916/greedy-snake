@@ -19,11 +19,11 @@ module.exports = {
         filename: "bundle.js",
 
         // 告诉webpack不使用箭头
-        environment: {
-            arrowFunction: false,
-            // 不使用const,此时兼容IE 10
-            const: false
-        }
+        // environment: {
+        //     arrowFunction: false,
+        //     // 不使用const,此时兼容IE 10
+        //     const: false
+        // }
     },
 
     // 指定webpack打包时要使用模块
@@ -50,7 +50,7 @@ module.exports = {
                                     {
                                         // 要兼容的目标浏览器
                                         targets: {
-                                            "chrome": "58",
+                                            "chrome": "50",
                                             "ie": "11"
                                         },
                                         // 指定corejs的版本

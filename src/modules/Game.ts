@@ -17,7 +17,7 @@ class Game {
     private _control: Control;
     private _renderer: Renderer;
     private _scorePanel: ScorePanel;
-    private _isGameOver: boolean = false;
+    private _isStart: boolean = false;
     private _isPause: boolean = false;
 
     constructor(element: HTMLElement, x: number = 20, y: number = 20, maxLevel: number = 10, upScore: number = 10) {
@@ -59,8 +59,8 @@ class Game {
         return this._food;
     }
 
-    get renderer() {
-        return this._renderer;
+    get isStart() {
+        return this._isStart;
     }
 
     get scorePanel() {
@@ -68,19 +68,20 @@ class Game {
     }
 
     private _prepare() {
-        this._isGameOver = false;
+        this._isStart = false;
         this._isPause = false;
-        this._renderer.createRenderer();
-        this._scorePanel.createScorePanel();
-        this._snake.createSnake();
-        this._food.createFood();
-        this._control.createControl();
+        this._renderer.prepareRenderer();
+        this._scorePanel.prepareScorePanel();
+        this._snake.prepareSnake();
+        this._food.prepareFood();
+        this._control.prepareControl();
 
         this._renderer.renderer();//渲染开始界面
     }
 
     //开始
     start() {
+        this._isStart = true;
         this._time.start();
         this._run();
     }
@@ -88,8 +89,6 @@ class Game {
     //重新开始
     reStart() {
         this._prepare();
-        this._time.start();
-        this._run();
     }
 
     pause() {
@@ -111,19 +110,19 @@ class Game {
             this._update();
         }
 
-        !this._isGameOver && !this._isPause && requestAnimationFrame(this._run);
+        this._isStart && !this._isPause && requestAnimationFrame(this._run);
     }
 
     private _update() {
         this._snake.move();
 
         if (this._snake.touchWall()) {
-            this._gameOver("撞到墙，游戏结束！");
+            this.gameOver("撞到墙，游戏结束！");
             return;
         }
 
         if (this._snake.touchSelf()) {
-            this._gameOver("撞到自己，游戏结束！");
+            this.gameOver("撞到自己，游戏结束！");
             return;
         }
 
@@ -131,17 +130,14 @@ class Game {
     }
 
     //游戏结束
-    private _gameOver(msg: string) {
-        this._isGameOver = true;
+    gameOver(msg: string) {
+        this._isStart = false;
         alert(msg);
     }
 
     //验证是否胜利
-    checkWin() {
-        if(this._x * this._y === this._snake.positions.length){
-            this._isGameOver = true;
-            alert("胜利！游戏结束！");
-        }
+    isGameWin() {
+        return this._x * this._y === this._snake.positions.length;
     }
 
 }

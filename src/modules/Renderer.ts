@@ -14,11 +14,12 @@ class Renderer {
         this._cells = [];
     }
 
-    createRenderer() {
+    prepareRenderer() {
         this._game.element.innerHTML = "";
         this._game.element.style.width = this._game.x * CELL_LENGTH + "px";
         this._game.element.style.height = this._game.y * CELL_LENGTH + "px";
 
+        this._cells = [];
         for (let y = 0; y < this._game.y; y++) {
             this._cells.push([]);
             for (let x = 0; x < this._game.x; x++) {

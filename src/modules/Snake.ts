@@ -11,7 +11,7 @@ class Snake {
         this._game = game;
     }
 
-    createSnake() {
+    prepareSnake() {
         this._positions = [
             new Position(0, 0), //尾
             new Position(1, 0),
@@ -29,9 +29,12 @@ class Snake {
         if(this._isEatFood(this._game.food.position)) {
             //吃到变长
             this._positions.push(this._game.food.position);
-            this._game.checkWin();
-            this._game.food.createFood();
-            this._game.scorePanel.addScore();
+            if(this._game.isGameWin()) {
+                this._game.gameOver("胜利！游戏结束！");
+            } else {
+                this._game.food.prepareFood();
+                this._game.scorePanel.addScore();
+            }
         } else {
             //没吃到前进
             for (let i = 0; i < this._positions.length; i++) {
