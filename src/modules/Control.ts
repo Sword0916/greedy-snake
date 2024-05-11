@@ -3,18 +3,13 @@ import Position from "./Position";
 
 class Control {
     private _game: Game;
-    private _isCreated: boolean = false;
-    
+
     constructor(game: Game) {
         this._game = game;
-    }
 
-    prepareControl() {
-        if(!this._isCreated) {
-            document.addEventListener('keydown', (e) => {
-                this._turn(e);
-            });
-        }
+        document.addEventListener('keydown', (e) => {
+            this._turn(e);
+        });
     }
 
     private _turn(event: KeyboardEvent) {

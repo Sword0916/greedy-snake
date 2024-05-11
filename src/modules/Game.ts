@@ -74,7 +74,6 @@ class Game {
         this._scorePanel.prepareScorePanel();
         this._snake.prepareSnake();
         this._food.prepareFood();
-        this._control.prepareControl();
 
         this._renderer.renderer();//渲染开始界面
     }
