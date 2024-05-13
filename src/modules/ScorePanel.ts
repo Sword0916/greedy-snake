@@ -6,6 +6,7 @@ class ScorePanel {
     private _level: number = 1;
     private _maxLevel: number;
     private _upScore: number;
+    private _speedRatio: number = 1;
 
     constructor(maxLevel: number, upScore: number) {
         this._scoreEle = document.getElementById('score')!;
@@ -17,10 +18,11 @@ class ScorePanel {
     prepareScorePanel() {
         this._score = 0;
         this._level = 1;
+        this._speedRatio = 1;
     }
 
-    get level() {
-        return this._level;
+    get speedRatio() {
+        return this._speedRatio;
     }
 
     addScore() {
@@ -33,8 +35,10 @@ class ScorePanel {
     private _levelUp() {
         if (this._level < this._maxLevel) {
             this._levelEle.innerHTML = ++this._level + '';
+            this._speedRatio = 1 - (this._level - 1) / this._maxLevel;
         }
     }
+
 }
 
 export default ScorePanel;
