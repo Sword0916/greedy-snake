@@ -102,12 +102,8 @@ class Game {
     }
 
     private _run() {
-        const deltaTime = this._time.deltaTime;
-        const tickDuration = TICK_DURATION * this.scorePanel.speedRatio;
-        if (deltaTime >= tickDuration) {
-            this._time.correctTime(deltaTime - tickDuration);
-            this._update();
-        }
+        const tickTime = TICK_DURATION * this.scorePanel.speedRatio;
+        this._time.isTick(tickTime) && this._update();
 
         this._isStart && !this._isPause && requestAnimationFrame(this._run);
     }

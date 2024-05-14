@@ -7,10 +7,6 @@ class Time {
         this._pauseTime = 0;
     }
 
-    get deltaTime() {
-        return Date.now() - this._lastTime;
-    }
-
     start() {
         this._lastTime = Date.now();
     }
@@ -23,7 +19,16 @@ class Time {
         this._lastTime += (Date.now() - this._pauseTime);
     }
 
-    correctTime(correctionValue: number) {
+    isTick(tickTime: number): boolean {
+        const deltaTime = Date.now() - this._lastTime;
+        if(deltaTime >= tickTime) {
+            this._correctTime(deltaTime - tickTime);
+            return true;
+        }
+        return false;
+    }
+
+    private _correctTime(correctionValue: number) {
         this._lastTime = Date.now() - correctionValue;
     }
 }
