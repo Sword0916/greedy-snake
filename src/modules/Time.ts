@@ -22,13 +22,13 @@ class Time {
     isTick(tickTime: number): boolean {
         const deltaTime = Date.now() - this._lastTime;
         if(deltaTime >= tickTime) {
-            this._correctTime(deltaTime - tickTime);
+            this._correctLastTime(deltaTime - tickTime);
             return true;
         }
         return false;
     }
 
-    private _correctTime(correctionValue: number) {
+    private _correctLastTime(correctionValue: number) {
         this._lastTime = Date.now() - correctionValue;
     }
 }
