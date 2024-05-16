@@ -15,15 +15,15 @@ class Renderer {
     }
 
     prepareRenderer() {
-        this._game.element.innerHTML = "";
-        this._game.element.style.width = this._game.x * CELL_LENGTH + "px";
-        this._game.element.style.height = this._game.y * CELL_LENGTH + "px";
+        this._game.container.innerHTML = "";
+        this._game.container.style.width = this._game.x * CELL_LENGTH + "px";
+        this._game.container.style.height = this._game.y * CELL_LENGTH + "px";
 
         this._cells = [];
         for (let y = 0; y < this._game.y; y++) {
             this._cells.push([]);
             for (let x = 0; x < this._game.x; x++) {
-                this._cells[y].push(new Cell(this._game.element));
+                this._cells[y].push(new Cell(this._game.container));
             }
         }
     }

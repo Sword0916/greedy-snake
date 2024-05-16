@@ -5,12 +5,14 @@ import {TICK_DURATION} from "./Constant";
 import Snake from "./Snake";
 import Control from "./Control";
 import ScorePanel from "./ScorePanel";
+import {GameOptions} from "./GameOptions";
+
 
 
 class Game {
     private _x: number;//横轴
     private _y: number;//纵轴
-    private _element: HTMLElement;
+    private _container: HTMLElement;
     private _food: Food;
     private _time: Time;
     private _snake: Snake;
@@ -20,16 +22,27 @@ class Game {
     private _isStart: boolean = false;
     private _isPause: boolean = false;
 
-    constructor(element: HTMLElement, x: number = 20, y: number = 20, maxLevel: number = 10, upScore: number = 10) {
-        this._element = element;
-        this._x = x > 5? Math.floor(x): 5;
-        this._y = y > 5? Math.floor(y): 5;
-        this._scorePanel = new ScorePanel(maxLevel, upScore);
+    private _onGameStart?: () => void;
+    private _onGameOver?: (msg: string) => void;
+    private _onGamePause?: () => void;
+    private _onGamePlay?: () => void;
+
+    constructor(options: GameOptions) {
+        this._container = options.container;
+        this._x = options.x && options.x > 5? Math.floor(options.x): 5;
+        this._y = options.y && options.y > 5? Math.floor(options.y): 5;
+        this._scorePanel = new ScorePanel(options);
         this._renderer = new Renderer(this);
         this._time = new Time();
         this._snake = new Snake(this);
         this._food = new Food(this);
         this._control = new Control(this);
+
+
+        this._onGameStart = options.onGameStart;
+        this._onGameOver = options.onGameOver;
+        this._onGamePause = options.onGamePause;
+        this._onGamePlay = options.onGamePlay;
 
         this._run = this._run.bind(this);
         this._prepare();
@@ -47,8 +60,8 @@ class Game {
         return this._isPause;
     }
 
-    get element() {
-        return this._element;
+    get container() {
+        return this._container;
     }
 
     get snake() {
@@ -83,6 +96,7 @@ class Game {
         this._isStart = true;
         this._time.start();
         this._run();
+        this._onGameStart && this._onGameStart();
     }
 
     //重新开始
@@ -93,12 +107,14 @@ class Game {
     pause() {
         this._isPause = true;
         this._time.pause();
+        this._onGamePause && this._onGamePause();
     }
 
     play() {
         this._isPause = false;
         this._time.play();
         this._run();
+        this._onGamePlay && this._onGamePlay();
     }
 
     private _run() {
@@ -127,7 +143,7 @@ class Game {
     //游戏结束
     gameOver(msg: string) {
         this._isStart = false;
-        alert(msg);
+        this._onGameOver && this._onGameOver(msg);
     }
 
     //验证是否胜利
